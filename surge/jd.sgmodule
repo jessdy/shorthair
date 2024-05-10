@@ -1,0 +1,10 @@
+#!name=获取JD cookie
+#!desc=获取JD cookie
+#!system=ios
+
+[Script]
+Rewrite: 获取联通cookie = type=http-request,pattern=^https:\/\/api\.m\.jd\.com/client\.action,requires-body=1,max-size=0,script-path=https://cdn.dreamyshare.com/surge/jd.js,script-update-interval=0
+
+[MITM]
+hostname = api.m.jd.com
+
