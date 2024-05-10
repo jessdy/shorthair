@@ -1,9 +1,9 @@
 #!name=获取JD cookie
-#!desc=获取JD cookie
+#!desc=获取JD cookie，并调用青龙API发送到青龙环境变量
 #!system=ios
 
 [Script]
-Rewrite: 获取联通cookie = type=http-request,pattern=^https:\/\/api\.m\.jd\.com/client\.action,requires-body=1,max-size=0,script-path=https://cdn.dreamyshare.com/surge/jd.js,script-update-interval=0
+获取JDcookie = type=http-request,pattern=^https:\/\/api\.m\.jd\.com\/api,script-path=https://cdn.dreamyshare.com/surge/jd.js
 
 [MITM]
 hostname = api.m.jd.com

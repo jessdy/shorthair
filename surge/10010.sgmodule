@@ -1,9 +1,9 @@
 #!name=获取联通 cookie
-#!desc=获取联通 cookie
+#!desc=获取联通 cookie，并调用青龙API发送到青龙环境变量
 #!system=ios
 
 [Script]
-Rewrite: 获取联通cookie = type=http-request,pattern=^https:\/\/m\.client\.10010\.com\/(.*)\/smartwisdomCommon,requires-body=1,max-size=-1,script-path=https://cdn.dreamyshare.com/surge/10010.js
+Rewrite: 获取联通cookie = type=http-request,pattern=^https:\/\/m\.client\.10010\.com\/(.*)\/smartwisdomCommon,script-path=https://cdn.dreamyshare.com/surge/10010.js
 [MITM]
 hostname = m.client.10010.com
 

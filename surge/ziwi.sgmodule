@@ -1,0 +1,9 @@
+#!name=获取ZIWI+cookie
+#!desc=获取ZIWI+cookie，并调用青龙API发送到青龙环境变量ZIWI_COOKIE
+#!system=ios
+
+[Script]
+获取ZIWI+cookie = type=http-request,pattern=^https:\/\/ziwi\.gzcrm\.cn\/json-rpc,script-path=https://cdn.dreamyshare.com/surge/ziwi.js
+[MITM]
+hostname = ziwi.gzcrm.cn
+

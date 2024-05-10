@@ -1,81 +1,75 @@
 /*
 
-获取方式：打开  京东 H5 -> 首页的流量查询获取 Cookie
+获取方式：打开 ZIWI小程序 -> 首页的流量查询获取 Cookie
 ===================
 [MITM]
-hostname = api.m.jd.com
+hostname = ziwi.gzcrm.cn
 
 【Surge脚本配置】:
 ===================
 [Script]
-京东组件 = type=http-request,pattern=https:\/\/api\.m\.jd\.com\/api,requires-body=1,max-size=0,script-path=https://cdn.dreamyshare.com/surge/jd.js,script-update-interval=0
+京东组件 = type=http-request,pattern=https:\/\/ziwi\.gzcrm\.cn\/json-rpc,requires-body=1,max-size=0,script-path=https://cdn.dreamyshare.com/surge/ziwi.js,script-update-interval=0
 
 ===================
 【Loon脚本配置】:
 ===================
 [Script]
-http-request https:\/\/api\.m\.jd\.com\/api tag=京东 headers, script-path=https://cdn.dreamyshare.com/surge/jd.js
+http-request https:\/\/ziwi\.gzcrm\.cn\/json-rpc tag=京东 headers, script-path=https://cdn.dreamyshare.com/surge/ziwi.js
 
 ===================
 【 QX  脚本配置 】 :
 ===================
 
 [rewrite_local]
-https:\/\/api\.m\.jd\.com\/api  url script-request-header https://cdn.dreamyshare.com/surge/jd.js
+https:\/\/ziwi\.gzcrm\.cn\/json-rpc  url script-request-header https://cdn.dreamyshare.com/surge/ziwi.js
 
  */
 
-const APIKey = 'Meijin_JD';
+const APIKey = 'Meijin_ZIWI';
 const baseURL = "http://10.10.10.10:5700/open"
 const clientId = 'KgFBimcV-UK2'
 const clientSecret = 'Fnee-sl6MYVD7hChknonX2aK'
 $ = new API(APIKey, true);
-if ($request) GetCookie();
+if ($request) GetCK();
 
-async function GetCookie() {
-    const cookie = $request.headers.Cookie || $request.headers.cookie;
-    let ck = ''
-    const http = new HTTP({baseURL});
-    if (cookie && cookie.indexOf('pt_key') > -1) {
-        // $.write(cookie, 'cookie');
-        cookie.replaceAll(' ', '').split(';').forEach(k => {
-            if (k) {
-                let key = k.split('=')[0]
-                if (key == 'pt_key' || key == 'pt_pin') {
-                    ck += (k + ';')
-                }
-            }
-        })
-        // $.notify('res2', ck + ' | ' + cookie)
-        let res = await http.get({
-            url: `/auth/token?client_id=${clientId}&client_secret=${clientSecret}`
-        })
-        let token = JSON.parse(res.body).data.token;
-        let res2 = await http.put({
-            url: '/envs',
-            headers: {
-                'Content-Type': 'application/json',
-                'accept': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify({
-                id: 2,
-                name: 'JD_COOKIE',
-                value: ck
+async function GetCK() {
+    if ($request.headers) {
+        
+        const tokenValue = $request.headers['Authorization'] || $request.headers['authorization'];
+        if (tokenValue) {
+            const http = new HTTP({baseURL});
+            let res = await http.get({
+                url: `/auth/token?client_id=${clientId}&client_secret=${clientSecret}`
             })
-        })
-        res2 = await http.put({
-            url: '/envs/enable',
-            headers: {
-                'Content-Type': 'application/json',
-                'accept': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify([2])
-        })
+            let token = JSON.parse(res.body).data.token;
+            let res2 = await http.put({
+                url: '/envs',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    id: 7,
+                    name: 'ZIWI_COOKIE',
+                    value: tokenValue
+                })
+            })
+            res2 = await http.put({
+                url: '/envs/enable',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify([7])
+            })
+            $.notify('ZIWI','获取签到Cookie成功🎉');
+        } else {
+            $.notify('ZIWI',"错误获取签到Cookie失败");
+        }
+
     }
-    $.notify('京东','已更新cookie到qinglong');
-//   }
     $.done();
 }
 
